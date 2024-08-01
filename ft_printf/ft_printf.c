@@ -1,84 +1,50 @@
-#include <stdio.h>
 #include <unistd.h>
 #include <stdarg.h>
 
-int	ft_putstr(char *str)
+void	ft_putstr(char *str, int *res)
 {
-	int ret = 0;
-	int i = 0;
 	if (!str)
-	{
-		write(1, "(null)", 6);
-		return (6);
-	}
-	while (str[i])
-		ret += write(1, &str[i++], 1);
-	return (ret);
+		str = "(null)";
+	while (*str)
+		*res += write(1, str++, 1);
 }
 
-int	ft_putnbr(int num)
+void	ft_putnbr(long long int nbr, int base, int *res)
 {
-	char *base = "0123456789";
-	int	ret = 0;
-	long res;
-	res = (long)num;
-	if (res < 0)
+	char *b = "0123456789abcdef";
+
+	if (nbr < 0)
 	{
-		ret += write(1, "-", 1);
-		res *= -1;
+		nbr *= -1;
+		*res += write(1, "-", 1);
 	}
-	if (res <= 10)
-		ret += write(1, &base[res], 1);
-	else if (res > 10)
-	{
-		ret += ft_putnbr(res / 10);
-		ret += ft_putnbr(res % 10);
-	}
-	return (ret);
+	if (nbr >= base)
+		ft_putnbr((nbr / base), base, res);
+	*res += write(1, &b[nbr % base], 1);
 }
 
-int	ft_hexa(unsigned int num)
+int ft_printf(const char *str, ...)
 {
-	char *base = "0123456789abcdef";
-	int	ret = 0;
-	if (num <= 16)
-		ret += write(1, &base[num], 1);
-	else if (num > 16)
-	{
-		ret += ft_hexa(num / 16);
-		ret += ft_hexa(num % 16);
-	}
-	return (ret);
-}
+	int res = 0;
+	va_list	element;
 
-int	conversion(va_list list, char c)
-{
-	int	ret = 0;
-	if (c == 's')
-		ret += ft_putstr(va_arg(list, char *));
-	else if (c == 'd')
-		ret += ft_putnbr(va_arg(list, int));
-	else if (c == 'x')
-		ret += ft_hexa(va_arg(list, int));
-	return (ret);
-}
-
-int	ft_printf(const char *str, ...)
-{
-	int	ret = 0;
-	int	i = 0;
-	va_list	list;
-	va_start(list, str);
-	while (str[i])
+	va_start(element, str);
+	while (*str)
 	{
-		if (str[i] == '%')
+		if (*str == '%' && ((*(str + 1) == 's') || (*(str + 1) == 'd') || (*(str + 1) == 'x')))
 		{
-			ret += conversion(list, str[++i]);
+			str++;
+			if (*str == 's')
+				ft_putstr(va_arg(element, char *), &res);
+			else if (*str == 'd')
+				ft_putnbr((long long int)va_arg(element, int), 10, &res);
+			else if (*str == 'x')
+				ft_putnbr((long long int)va_arg(element, unsigned int), 16, &res);
 		}
 		else
-			ret += write(1, &str[i], 1);
-		i++;
+			res += write(1, str, 1);
+		str++;
 	}
-	va_end(list);
-	return (ret);
+	va_end(element);
+	return (res);
 }
