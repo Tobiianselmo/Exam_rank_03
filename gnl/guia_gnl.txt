@@ -2,13 +2,13 @@ GET_NEXT_LINE EXAM RANK 03:
 
 PASOS:
 
-1: declearar el BUFFER_SIZE arriba del todo y las 5 variables, 
+1: Declarar el BUFFER_SIZE arriba del todo y las 5 variables, 
 las cuales hay una 'static' que tiene el
 tamaño del [BUFFER_SIZE + 1], luego dos 'char *' y dos int.
 
 2: Duplicamos line(char *) con el strdup y le enviamos la variable 'static'
 
-3: hacemos el bucle en el cual vamos a iterar mientras no encuentre el '\n'
+3: Hacemos el bucle en el cual vamos a iterar mientras no encuentre el '\n'
 y mientras la cantidad de caracteres que retorne el read sea '!= 0'.
 Y dentro del bucle vamos a asignarle el '\0' a la 'static' en la posicion
 la cual queda el contador del read.
@@ -23,10 +23,10 @@ existe, entonces al int to_copy le igualamos
 (la diferencia de ambos mas el nulo)
 y llamamos a la funcion ft_strcpy(buf'static', New_line + 1);
 
-si New_line no exite, en ese caso lo que vamos a hacer es el to_copy
+6: Si New_line no exite, en ese caso lo que vamos a hacer es el to_copy
 igualarlo al ft_strlen(line) y al buf'static' le asignamos el '\0' en la pos '0'.
 
-6: Por ultimo a line en posicion to_copy le asignamos el '\0' y luego
+7: Por ultimo a line en posicion to_copy le asignamos el '\0' y luego
 lo retornamos.
 
 
